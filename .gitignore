@@ -4,6 +4,9 @@
 expo-env.d.ts
 # @end expo-cli
 
+#Example app
+app-example
+
 # Dependencies
 node_modules/
 
