@@ -1,4 +1,6 @@
 import { Text, View } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import React, { useState } from "react";
 
 export default function Search() {
   return (
@@ -19,12 +21,26 @@ export default function Search() {
         marginTop: 20
         }}>
 
-    <View style={{flexDirection: "row"}}>
+    <View style={{flexDirection: "row",
+      marginBottom: 10
+    }}>
       <Text style={{padding: 10}}> Make: </Text>
+      <Dropdown style={{borderWidth: 1, borderColor: "black"}} 
+      placeholder="Select Make" 
+      onChange={function (item: any): void {
+            throw new Error("Function not implemented.");
+          } } data={[]} labelField={""} valueField={""}/>
     </View>
 
-    <View style={{flexDirection: "row"}}>
+    <View style={{flexDirection: "row",
+      marginTop: 10
+    }}>
       <Text style={{padding: 10}}> Model: </Text>
+      <Dropdown style={{borderWidth: 1, borderColor: "black"}} 
+      placeholder="Select Model" 
+      onChange={function (item: any): void {
+            throw new Error("Function not implemented.");
+          } } data={[]} labelField={""} valueField={""}/>
     </View>
 
     </View>
