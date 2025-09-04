@@ -102,27 +102,7 @@ export default function SignUpScreen() {
                     )}
                 </View>
 
-                {/* Email */}
-                <View style={{ width: "100%" }}>
-                    <Text>Email</Text>
-                    <TextInput
-                        placeholder="you@example.com"
-                        value={email}
-                        onChangeText={setEmail}
-                        autoCapitalize="none"
-                        keyboardType="email-address"
-                        textContentType="emailAddress"
-                        style={{
-                            borderWidth: 1,
-                            borderRadius: 10,
-                            padding: 10,
-                            marginTop: 5,
-                        }}
-                    />
-                    {!!emailErr && (
-                        <Text style={{ color: "red", marginTop: 4 }}>{emailErr}</Text>
-                    )}
-                </View>
+            
 
                 {/* Password */}
                 <View style={{ width: "100%" }}>
