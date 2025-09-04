@@ -31,8 +31,8 @@ export default function Index() { // did not rename file to login-page because a
   };
 
   const directToSignUp = () => {
-    console.log("Setting up sign up page soon!");
-    // use router.push(route-name) here to take user from login to sign up page
+    // navigate to the sign up page
+  router.push("/sign-up");
   }
 
   return (
