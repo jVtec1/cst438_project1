@@ -1,5 +1,5 @@
 import { Text, TextInput, View, Button } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 
 export default function Index() { // did not rename file to login-page because already routes to index page/first page
@@ -32,11 +32,11 @@ export default function Index() { // did not rename file to login-page because a
 
   const directToSignUp = () => {
     console.log("Setting up sign up page soon!");
+    // use router.push(route-name) here to take user from login to sign up page
   }
 
   return (
-    <> 
-    <Stack.Screen options={{title:"Login"}}/> {/* had to access Stack to change title of page from index to Login */}
+    // <Stack.Screen options={{title:"Login"}}/> {/* had to access Stack to change title of page from index to Login */}
     <View // without other View (parent), code gets error
     style={{
       justifyContent: "center",
@@ -74,6 +74,5 @@ export default function Index() { // did not rename file to login-page because a
     <Button title="Sign up" onPress={directToSignUp}/>
 
     </View>
-    </>
   );
 }
