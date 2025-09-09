@@ -32,7 +32,7 @@ export default function Index() { // did not rename file to login-page because a
 
   const directToSignUp = () => {
     // navigate to the sign up page
-  router.push("/sign-up");
+  router.push("/signUp");
   }
 
   return (

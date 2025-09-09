@@ -1,3 +1,4 @@
+// app/signUp.tsx
 import { useState } from "react";
 import {
     View,
@@ -173,7 +174,7 @@ export default function SignUpScreen() {
 
 
                 <Pressable
-                    onPress={() => router.push("/PassChange")}
+                    onPress={() => router.push("/changePassword")}
                     style={{
                         marginTop: 15,
                         paddingVertical: 10,

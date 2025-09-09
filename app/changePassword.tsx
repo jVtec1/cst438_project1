@@ -1,4 +1,4 @@
-// app/change-password.tsx
+// app/changPassword.tsx
 import { useState } from "react";
 import {
   View,
