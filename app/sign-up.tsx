@@ -9,7 +9,6 @@ import {
     Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
-
 export default function SignUpScreen() {
     const router = useRouter();
 
@@ -66,6 +65,7 @@ export default function SignUpScreen() {
         router.replace("/");
     };
 
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.select({ ios: "padding", android: undefined })}
@@ -102,7 +102,7 @@ export default function SignUpScreen() {
                     )}
                 </View>
 
-            
+
 
                 {/* Password */}
                 <View style={{ width: "100%" }}>
@@ -163,11 +163,36 @@ export default function SignUpScreen() {
                         borderRadius: 8
                     }}
                 >
-                    <Text style={{ textAlign: "center"}}>
+                    <Text style={{ textAlign: "center" }}>
                         Already have an account? Click to to Login
                     </Text>
                 </Pressable>
+
+
+
+
+
+                <Pressable
+                    onPress={() => router.push("/PassChange")}
+                    style={{
+                        marginTop: 15,
+                        paddingVertical: 10,
+                        paddingHorizontal: 20,
+                        borderRadius: 8,
+                        backgroundColor: "#2196f3"
+                    }}
+                >
+                    <Text style={{ textAlign: "center", color: "white", fontWeight: "500" }}>
+                        Change Password
+                    </Text>
+                </Pressable>
+
+
+
             </View>
         </KeyboardAvoidingView>
+
     );
+
+
 }
