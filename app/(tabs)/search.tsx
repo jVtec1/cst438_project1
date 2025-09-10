@@ -74,7 +74,13 @@ export default function Search() {
   // function for after button click; TODO: Connect this to Recycler View Sergio working on
   // grab captured selectedMake and selectedModel and put them as params into API Call
   const captureMakeAndModel = () => {
-    Alert.alert("You selected: " + selectedMake + " " + selectedModel); // alert used to make sure values being captured 
+    if (selectedMake === null) { // if user doesn't select a make, model dropdown won't be populated and there are no values to capture
+      Alert.alert("Please select a Make");
+    } else if (selectedModel === null) { // if user selects a make, but doesn't select a model
+      Alert.alert("Please select a Model"); 
+    } else {
+      Alert.alert("You selected: " + selectedMake + " " + selectedModel); // alert used to make sure values being captured 
+    }
   }
   
 
