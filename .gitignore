@@ -7,6 +7,9 @@ expo-env.d.ts
 #Example app
 app-example
 
+#testing/example database and sql statements
+app/db
+
 # Dependencies
 node_modules/
 
