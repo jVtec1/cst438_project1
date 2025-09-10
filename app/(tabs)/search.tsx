@@ -1,72 +1,82 @@
 //@ts-nocheck
 // above helps with removing typescript-related errors while writing in JavaScript on tsx file
-import { Text, View } from "react-native";
+import { Text, View, Alert } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import { SetStateAction, useState } from "react";
+import { useState, useEffect } from "react";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 export default function Search() {
 
-  // dummy values since haven't checked if API working
-  const carMakes = [
-    { label: "Toyota", value: "toyota" },
-    { label: "Honda", value: "honda" }
-  ];
+  //TODO NEXT: Grab user's make and model choices, already saved from useState, and put them in params in API call
 
-  const toyotaModels = [
-    { label: "Corolla", value: "corolla" },
-    { label: "Camry", value: "camry" },
-    { label: "Prius", value: "prius" },
-  ];
+  const [carMakes, setCarMakes] = useState([]);
+  const [carModels, setCarModels] = useState([]);
+  const [allCarData, setAllCarData] = useState({}); // need this line to capture all car data, so we can keep accessing different makes and models
 
-  const hondaModels = [
-    { label: "Civic", value: "civic" },
-    { label: "Accord", value: "accord" },
-    { label: "HR-V", value: "hr-v" },
-  ];
-
-  // function to handle user picking a specific Make. we want models to match models of specific Make
-  const onHandleChange = (make) => { // did a quick fix here, was having problem w/ inferred type for make
-  //  console.log("Set up dropdown menu for Model!");
-   setSelectedMake(make.value);
-
-   //clearning old model, so if user decides to choose a different make, the old models aren't still there
-   setSelectedModel(null);
-
-   if (make.value === "toyota") {
-    setModelData(toyotaModels);
-  } else if (make.value === "honda") {
-    setModelData(hondaModels);
-  } 
-  };
-
-  //testing API
-  const getCarData = async () => {
+  const getMakesAndModels = async () => {
     try {
-
-      const response = await fetch('https://api.auto.dev/listings/10ARJYBS7RC154562', {
+      const response = await fetch("https://www.auto.dev/api/models", {
+        method: "GET",
         headers: {
-          Authorization: 'Bearer sk_ad_XQYDCGKi5ed3CiT_Pf_GnrGw',
-          'Content-Type': 'application/json',
+          Authorization: "Bearer sk_ad_XQYDCGKi5ed3CiT_Pf_GnrGw", // replace with your key
+          "Content-Type": "application/json",
         },
       });
+  
+      const result = await response.json();
 
-      const result = await response.json()
-      const vehicle = result.data.vehicle;
-      const vehicleInfo = `${vehicle.make} ${vehicle.model}`;
-      setExampleAPI(vehicleInfo); // String
-
+      setAllCarData(result);
+  
+      // taking the keys (makes) from JSON and assigning the make as label and value
+      const makesList = Object.keys(result).map((make) => ({
+        label: make,
+        value: make,
+      }));
+  
+      setCarMakes(makesList);
+  
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
+  };
+
+  // calling function using useEffect because we only want it to grab values on render
+  useEffect(() => {
+    getMakesAndModels();
+  }, []); // [] indicates to only run the function once
+
+
+  // function to handle user picking a specific Make. we want models to match models of specific Make
+  const onHandleChangeMake = (make) => { 
+
+   setSelectedMake(make.value); // have to assign make.value, not just "make" because make is whole Object (e.g. {label: "", value: ""})
+   setSelectedModel(null); // ensuring if user changes mind about make, models don't still show previous ones
+   Alert.alert("You chose: " + make.label);
+
+   try {
+
+    const modelsList = allCarData[make.value].map((model) => ({ // make.value is the key and can be used as index to grab array with models
+      label: model,
+      value: model,
+    }));
+
+    setCarModels(modelsList);
+
+   } catch(error) {
+    console.log(error);
+   }
+
+  };
+
+  const onHandleChangeModel = (model) => {
+    setSelectedModel(model.value); // saves our model value 
+    Alert.alert("You chose this model: " + model.value);
   }
   
 
-  const [selectedMake, setSelectedMake] = useState(null);
-  const [selectedModel, setSelectedModel] = useState(null);
-  const [modelData, setModelData] = useState([]);
-  const [exampleAPI, setExampleAPI] = useState("");
-  
+  const [selectedMake, setSelectedMake] = useState(null); // saves current selected make and even shows in dropdown bar
+  const [selectedModel, setSelectedModel] = useState(null); // saaves current selected model and even shows in dropdown bar
+  // const [modelData, setModelData] = useState([]);
 
   return (
     <View>
@@ -100,7 +110,7 @@ export default function Search() {
         width: "25%"
     }} 
       placeholder="Select Make" 
-      onChange={onHandleChange} 
+      onChange={onHandleChangeMake} 
       data={carMakes}
       value={selectedMake}
       labelField={"label"} 
@@ -121,8 +131,8 @@ export default function Search() {
         width: "25%"
     }} 
       placeholder="Select Model" 
-      onChange={getCarData} 
-      data={modelData} 
+      onChange={onHandleChangeModel} 
+      data={carModels} 
       value={selectedModel}
       labelField={"label"} 
       valueField={"value"}/>
@@ -130,12 +140,6 @@ export default function Search() {
 
     </View>
     {/* end of dropdown menus section */}
-
-    <View 
-    style={{justifyContent: "center",
-      alignItems: "center"}}>
-      <Text> {exampleAPI} </Text> {/* Replace with API call data, testing on mobile */}
-    </View>
 
 
     </View>
