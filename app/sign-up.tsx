@@ -9,8 +9,11 @@ import {
     Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useSQLiteContext } from "expo-sqlite"; // to access the database
 
 export default function SignUpScreen() {
+
+    const db = useSQLiteContext(); // to access the database
     const router = useRouter();
 
     const [username, setUsername] = useState<string>("");
@@ -62,8 +65,14 @@ export default function SignUpScreen() {
 
         console.log("Signing up:", { username, email });
 
+        //Insert user account details into user database
+        await db.runAsync(
+            `INSERT INTO users (username, email, password) VALUES (?,?,?)`,
+            [username,email,confirmPassword]
+        )
+
         // On success, maybe landing page or back to login:
-        router.replace("/");
+        router.replace("/")
     };
 
     return (
