@@ -1,6 +1,8 @@
-import { Text, TextInput, View, Button } from "react-native";
+import { Text, TextInput, View, Button, FlatList, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSQLiteContext } from "expo-sqlite"; // to access the database
+import UserList from "./UserList";
 
 export default function Index() { // did not rename file to login-page because already routes to index page/first page
   // need to use useState to capture user inputs 
@@ -10,7 +12,7 @@ export default function Index() { // did not rename file to login-page because a
   const [passwordErrorMsg, setPassErrorMsg] = useState("");
 
   const router = useRouter(); // need this router to change pages, e.g.: from login to landing page
-
+  const db = useSQLiteContext(); // to access the database
 
   const verifyLogin = () => {
     console.log("Verify login function working!"); 
@@ -24,6 +26,21 @@ export default function Index() { // did not rename file to login-page because a
       setPassErrorMsg("Password has to be 3 or more characters in length.")
     } else if (passwordInput.length >= 3) {
       setPassErrorMsg("");
+    }
+
+    const loadUsers = async () => { // this checks if the login credentials (user) exists in the databse
+      try{   
+          const users = await db.getFirstAsync(`SELECT username, password 
+                                                FROM users 
+                                                WHERE username = ? AND password = ?`, usernameInput, passwordInput);
+          router.push("/(tabs)"); // if successful route to home page
+      }catch (error) {
+          console.error ("User not found", error);
+      }
+    };
+
+    if(usernameInput.length >= 2 && passwordInput.length >= 3){ // valid username and password length
+      loadUsers();
     }
 
     // error check with database, ensure user is in db and username and password matches
@@ -72,6 +89,10 @@ export default function Index() { // did not rename file to login-page because a
 
     <Text style={{marginTop: 20}}> Don&apos;t have an account? Click here: </Text>
     <Button title="Sign up" onPress={directToSignUp}/>
+
+    {/* This "UserList" is here to see users and their credentials that are in the database, pops up on login screen, for testing purposes */}
+    <UserList /> 
+    {/* Also when this fills with users you have to scroll up and down it */}
 
     </View>
   );
