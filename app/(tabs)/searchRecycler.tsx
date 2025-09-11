@@ -112,7 +112,7 @@ export default function Search() {
         year: car.year || car.modelYear || 2023,
         price: car.price || car.listPrice || Math.floor(Math.random() * 50000) + 10000,
         mileage: car.mileage || car.odometer || Math.floor(Math.random() * 100000),
-        imageUrl: car.imageUrl || car.primaryPhotoUrl || car.photoUrls?.[0] || `https://via.placeholder.com/300x200?text=${selectedMake}+${selectedModel}`,
+        //imageUrl: car.imageUrl || car.primaryPhotoUrl || car.photoUrls?.[0] || `https://via.placeholder.com/300x200?text=${selectedMake}+${selectedModel}`,
         description: car.description || car.notes || `Beautiful ${selectedMake} ${selectedModel} in excellent condition`,
       }));
 
