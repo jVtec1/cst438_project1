@@ -1,15 +1,35 @@
 //@ts-nocheck
 // above helps with removing typescript-related errors while writing in JavaScript on tsx file
-import { Text, View, Alert, Button } from "react-native";
+import { Text, View, Alert, Button, FlatList, ActivityIndicator, Image, StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { useState, useEffect } from "react";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
-export default function Search() {
+interface CarItem {
+  id: string;
+  vin: string;
+  make: string;
+  model: string;
+  year: number;
+  price: number;
+  mileage: number;
+  imageUrl?: string;
+  description?: string;
+}
 
+
+export default function Search() {
   const [carMakes, setCarMakes] = useState([]);
   const [carModels, setCarModels] = useState([]);
-  const [allCarData, setAllCarData] = useState({}); // need this line to capture all car data, so we can keep accessing different makes and models
+  const [allCarData, setAllCarData] = useState({});
+  const [selectedMake, setSelectedMake] = useState(null);
+  const [selectedModel, setSelectedModel] = useState(null);
+  
+  const [carData, setCarData] = useState<CarItem[]>([]);
+  const [loadingCars, setLoadingCars] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  //const [carImage, carImage] = useState(false);
+  const [vins, setVins] = useState([]);
 
   const getMakesAndModels = async () => {
     try {
@@ -22,7 +42,6 @@ export default function Search() {
       });
   
       const result = await response.json();
-
       setAllCarData(result);
   
       // taking the keys (makes) from JSON and assigning the make as label and value
@@ -38,134 +57,331 @@ export default function Search() {
     }
   };
 
-  // calling function using useEffect because we only want it to grab values on render
   useEffect(() => {
     getMakesAndModels();
-  }, []); // [] indicates to only run the function once
+  }, []);
 
-
-  // function to handle user picking a specific Make. we want models to match models of specific Make
   const onHandleChangeMake = (make) => { 
+    setSelectedMake(make.value);
+    setSelectedModel(null);
+    setShowResults(false); // Hide results when make changes
 
-   setSelectedMake(make.value); // have to assign make.value, not just "make" because make is whole Object (e.g. {label: "", value: ""})
-   setSelectedModel(null); // ensuring if user changes mind about make, models don't still show previous ones
-   Alert.alert("You chose: " + make.label); // alert used to make sure values being captured 
-
-   try {
-
-    const modelsList = allCarData[make.value].map((model) => ({ // make.value is the key and can be used as index to grab array with models
-      label: model,
-      value: model,
-    }));
-
-    setCarModels(modelsList);
-
-   } catch(error) {
-    console.log(error);
-   }
-
+    try {
+      const modelsList = allCarData[make.value].map((model) => ({
+        label: model,
+        value: model,
+      }));
+      setCarModels(modelsList);
+    } catch(error) {
+      console.log(error);
+    }
   };
 
   const onHandleChangeModel = (model) => {
-    setSelectedModel(model.value); // saves our model value 
-    Alert.alert("You chose this model: " + model.value); // alert used to make sure values being captured 
+    setSelectedModel(model.value);
+    setShowResults(false);
   }
 
-  // function for after button click; TODO: Connect this to Recycler View Sergio working on
-  // grab captured selectedMake and selectedModel and put them as params into API Call
-  const captureMakeAndModel = () => {
-    if (selectedMake === null) { // if user doesn't select a make, model dropdown won't be populated and there are no values to capture
-      Alert.alert("Please select a Make");
-    } else if (selectedModel === null) { // if user selects a make, but doesn't select a model
-      Alert.alert("Please select a Model"); 
-    } else {
-      Alert.alert("You selected: " + selectedMake + " " + selectedModel); // alert used to make sure values being captured 
+  const captureMakeAndModel = async () => {
+  if (selectedMake === null) {
+    Alert.alert("Please select a Make");
+  } else if (selectedModel === null) {
+    Alert.alert("Please select a Model"); 
+  } else {
+    Alert.alert("Searching for: " + selectedMake + " " + selectedModel);
+    setLoadingCars(true);
+    setShowResults(true);
+    
+      try {
+      const response = await fetch(`https://www.auto.dev/api/listings?make=${selectedMake}&model=${selectedModel}&limit=10`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer sk_ad_XQYDCGKi5ed3CiT_Pf_GnrGw", 
+          "Content-Type": "application/json",
+        },
+      });
+
+
+
+      const carListings = await response.json();
+      console.log("FULL API RESPONSE:", carListings);
+      if (!Array.isArray(carListings.records)) {
+        throw new Error("API response 'records' field is missing or not an array");
+      }
+      try{
+        const transformedData: CarItem[] = carListings.records.map((car, index) => ({
+        id: car.vin || index.toString(),
+        vin: car.vin,
+        make: car.make || selectedMake,
+        model: car.model || selectedModel,
+        year: car.year || 2023,
+        price: typeof car.priceUnformatted === 'number' ? car.priceUnformatted : 0,
+        mileage: typeof car.mileageUnformatted === 'number' ? car.mileageUnformatted : 0,
+        imageUrl: car.primaryPhotoUrl || null,
+        description: `${car.trim || ""} - ${car.bodyStyle || ""}`,
+      }));
+
+
+      const vins = transformedData.map(car => car.vin);
+      setVins(vins);
+      console.log("VINS: ", vins);
+
+      setCarData(transformedData);
+      } catch(error){
+        console.log(error);
+      }
+      
+    } catch (error) {
+      console.error("Error fetching car data:", error);
+      Alert.alert("Error", "Failed to fetch car data. Please try again.");
+
+      // Fallback mock data
+      const fallbackData: CarItem[] = [
+        {
+          id: "1",
+          make: selectedMake,
+          model: selectedModel,
+          year: 2022,
+          price: 35000,
+          mileage: 15000,
+          description: "Low mileage, excellent condition",
+        },
+        {
+          id: "2",
+          make: selectedMake,
+          model: selectedModel,
+          year: 2021,
+          price: 28000,
+          mileage: 25000,
+          description: "One owner, well maintained",
+        },
+        {
+          id: "3",
+          make: selectedMake,
+          model: selectedModel,
+          year: 2023,
+          price: 42000,
+          mileage: 5000,
+          description: "Brand new condition, all features",
+        }
+      ];
+
+      setCarData(fallbackData);
+    } finally {
+      setLoadingCars(false);
     }
   }
-  
+};
 
-  const [selectedMake, setSelectedMake] = useState(null); // saves current selected make and even shows in dropdown bar
-  const [selectedModel, setSelectedModel] = useState(null); // saves current selected model and even shows in dropdown bar
+  // Render item for FlatList
+  const renderCarItem = ({ item }: { item: CarItem }) => (
+    <View style={styles.carItem}>
+      <Image 
+        source={{ uri: item.imageUrl }} 
+        style={styles.carImage}
+        resizeMode="cover"
+      />
+      <View style={styles.carInfo}>
+        <Text style={styles.carTitle}>{item.year} {item.make} {item.model}</Text>
+        <Text style={styles.carPrice}>${item.price.toLocaleString()}</Text>
+        <Text style={styles.carMileage}>{item.mileage.toLocaleString()} miles</Text>
+        <Text style={styles.carDescription}>{item.description}</Text>
+      </View>
+    </View>
+  );
 
   return (
-    <View style={{
-      marginTop: 20
-    }}>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Search for Vehicles</Text>
+      </View>
 
-    <View
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Search for Vehicles</Text>
-    </View>
+      {/* Dropdown menus section */}
+      <View style={styles.dropdownContainer}>
+        <View style={styles.dropdownRow}>
+          <Text style={styles.dropdownLabel}>Make:</Text>
+          <Dropdown 
+            style={styles.dropdown}
+            placeholder="Select Make" 
+            onChange={onHandleChangeMake} 
+            data={carMakes}
+            value={selectedMake}
+            labelField="label" 
+            valueField="value"
+          />
+        </View>
 
- {/* start of dropdown menus section */}
-    <View style={{justifyContent: "center",
-        alignItems: "center",
-        marginTop: 20
-        }}>
+        <View style={styles.dropdownRow}>
+          <Text style={styles.dropdownLabel}>Model:</Text>
+          <Dropdown 
+            style={styles.dropdown}
+            placeholder="Select Model" 
+            onChange={onHandleChangeModel} 
+            data={carModels} 
+            value={selectedModel}
+            labelField="label" 
+            valueField="value"
+          />
+        </View>
+      </View>
 
-    <View style={{flexDirection: "row",
-      marginBottom: 10
-    }}>
-      <Text style={{padding: 10}}> Make: </Text>
-      <Dropdown style={{
-        height: 50,          
-        borderWidth: 1, 
-        borderColor: "#ccc",
-        borderRadius: 8,
-        paddingHorizontal: 15, 
-        backgroundColor: 'white',
-        width: "25%"
-    }} 
-      placeholder="Select Make" 
-      onChange={onHandleChangeMake} 
-      data={carMakes}
-      value={selectedMake}
-      labelField={"label"} 
-      valueField={"value"}/>
-    </View>
+      {/* Search button */}
+      <View style={styles.searchButtonContainer}>
+        <Button 
+          title="Search"
+          onPress={captureMakeAndModel} //refresh the vin array so that it does not keep any of the previous data from the last search. 
+        />
+      </View>
 
-    <View style={{flexDirection: "row",
-      marginTop: 10
-    }}>
-      <Text style={{padding: 10}}> Model: </Text>
-      <Dropdown style={{
-        height: 50,           
-        borderWidth: 1, 
-        borderColor: "#ccc",
-        borderRadius: 8,
-        paddingHorizontal: 15, 
-        backgroundColor: 'white',
-        width: "25%"
-    }} 
-      placeholder="Select Model" 
-      onChange={onHandleChangeModel} 
-      data={carModels} 
-      value={selectedModel}
-      labelField={"label"} 
-      valueField={"value"}/>
-    </View>
-
-    </View>
-    {/* end of dropdown menus section */}
-
-    <View 
-    style={{
-      justifyContent: "center",
-      alignItems: "center",
-      length: "25%",
-      marginTop: 20
-    }}>
-    <Button title="Search"
-    onPress={captureMakeAndModel}
-    />
-
-    </View>
-
-
+      {/* Results section */}
+      {showResults && (
+        <View style={styles.resultsContainer}>
+          {loadingCars ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#0000ff" />
+              <Text>Loading {selectedMake} {selectedModel} results...</Text>
+            </View>
+          ) : carData.length > 0 ? (
+            <>
+              <Text style={styles.resultsHeader}>
+                Found {carData.length} {selectedMake} {selectedModel} vehicles
+              </Text>
+              <FlatList
+                data={carData}
+                renderItem={renderCarItem}
+                keyExtractor={(item) => item.id}
+                style={styles.carList}
+                contentContainerStyle={styles.carListContent}
+              />
+            </>
+          ) : (
+            <Text style={styles.noResultsText}>
+              No results found for {selectedMake} {selectedModel}
+            </Text>
+          )}
+        </View>
+      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 20,
+    backgroundColor: '#f5f5f5',
+  },
+  header: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  dropdownContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+    backgroundColor: 'white',
+    padding: 20,
+    marginHorizontal: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  dropdownRow: {
+    flexDirection: "row",
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+  dropdownLabel: {
+    padding: 10,
+    fontWeight: 'bold',
+    width: 60,
+  },
+  dropdown: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    backgroundColor: 'white',
+    width: 200,
+  },
+  searchButtonContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  resultsContainer: {
+    flex: 1,
+    padding: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  resultsHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  noResultsText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#666',
+    marginTop: 20,
+  },
+  carList: {
+    flex: 1,
+  },
+  carListContent: {
+    paddingBottom: 20,
+  },
+  carItem: {
+    backgroundColor: 'white',
+    marginBottom: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    overflow: 'hidden',
+  },
+  carImage: {
+    width: '100%',
+    height: 200,
+  },
+  carInfo: {
+    padding: 16,
+  },
+  carTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  carPrice: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    marginBottom: 4,
+  },
+  carMileage: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+  },
+  carDescription: {
+    fontSize: 14,
+    color: '#333',
+  },
+});
