@@ -197,8 +197,6 @@ export default function SignUpScreen() {
                     </Text>
                 </Pressable>
 
-
-                    <Button title="Delete Profile" onPress={() => router.push("/deleteProfile")} />
             </View>
         </KeyboardAvoidingView>
     );

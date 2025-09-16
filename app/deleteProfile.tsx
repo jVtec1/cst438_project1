@@ -186,14 +186,14 @@ export default function DeleteProfileScreen() {
           )}
         </View>
 
-        {/* Action button or spinner */}
+        {/* Action button */}
         {loading ? (
           <ActivityIndicator />
         ) : (
           <Button title="Delete my account" onPress={handleDeleteProfile} />
         )}
 
-        <Button title="Back to Login" onPress={() => router.replace("/")} />
+        <Button title="Back to Main Screen" onPress={() => router.push("/(tabs)")} />
       </View>
     </KeyboardAvoidingView>
   );
