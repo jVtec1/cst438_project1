@@ -103,11 +103,13 @@ export default function Index() { // did not rename file to login-page because a
     {/* This "UserList" is here to see users and their credentials that are in the database, pops up on login screen, for testing purposes */}
     <UserList /> 
     {/* Also when this fills with users you have to scroll up and down it */}
-
     <Button title="Change password" onPress={() => router.push("/changePassword")} />
 
+    <Button title="Delete profile" onPress={() => router.push("/deleteProfile")} />
 
     </View>
+
+
 
 
       
