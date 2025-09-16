@@ -26,7 +26,7 @@ export default function Checkout() {
         resizeMode="cover"
       />
       <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-        {item.year} {item.make} {item.model}
+        {item.year} {item.make} {item.model} - {item.mileage} miles
       </Text>
       <Text style={{ fontSize: 16, color: 'green', marginTop: 5 }}>
         ${item.price.toLocaleString()}
