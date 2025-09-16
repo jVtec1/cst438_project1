@@ -7,6 +7,7 @@ import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 interface CarItem {
   id: string;
+  vin: string;
   make: string;
   model: string;
   year: number;
@@ -16,6 +17,7 @@ interface CarItem {
   description?: string;
 }
 
+
 export default function Search() {
   const [carMakes, setCarMakes] = useState([]);
   const [carModels, setCarModels] = useState([]);
@@ -23,10 +25,11 @@ export default function Search() {
   const [selectedMake, setSelectedMake] = useState(null);
   const [selectedModel, setSelectedModel] = useState(null);
   
-  // New states for car data display
   const [carData, setCarData] = useState<CarItem[]>([]);
   const [loadingCars, setLoadingCars] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  //const [carImage, carImage] = useState(false);
+  const [vins, setVins] = useState([]);
 
   const getMakesAndModels = async () => {
     try {
@@ -89,7 +92,7 @@ export default function Search() {
     setLoadingCars(true);
     setShowResults(true);
     
-    try {
+      try {
       const response = await fetch(`https://www.auto.dev/api/listings?make=${selectedMake}&model=${selectedModel}&limit=10`, {
         method: "GET",
         headers: {
@@ -98,31 +101,41 @@ export default function Search() {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+
 
       const carListings = await response.json();
-      
-      // Transform API response to match our CarItem interface
-      const transformedData: CarItem[] = carListings.map((car: any, index: number) => ({
-        id: car.id || car.vin || index.toString(),
+      console.log("FULL API RESPONSE:", carListings);
+      if (!Array.isArray(carListings.records)) {
+        throw new Error("API response 'records' field is missing or not an array");
+      }
+      try{
+        const transformedData: CarItem[] = carListings.records.map((car, index) => ({
+        id: car.vin || index.toString(),
+        vin: car.vin,
         make: car.make || selectedMake,
         model: car.model || selectedModel,
-        year: car.year || car.modelYear || 2023,
-        price: car.price || car.listPrice || Math.floor(Math.random() * 50000) + 10000,
-        mileage: car.mileage || car.odometer || Math.floor(Math.random() * 100000),
-        //imageUrl: car.imageUrl || car.primaryPhotoUrl || car.photoUrls?.[0] || `https://via.placeholder.com/300x200?text=${selectedMake}+${selectedModel}`,
-        description: car.description || car.notes || `Beautiful ${selectedMake} ${selectedModel} in excellent condition`,
+        year: car.year || 2023,
+        price: typeof car.priceUnformatted === 'number' ? car.priceUnformatted : 0,
+        mileage: typeof car.mileageUnformatted === 'number' ? car.mileageUnformatted : 0,
+        imageUrl: car.primaryPhotoUrl || null,
+        description: `${car.trim || ""} - ${car.bodyStyle || ""}`,
       }));
 
+
+      const vins = transformedData.map(car => car.vin);
+      setVins(vins);
+      console.log("VINS: ", vins);
+
       setCarData(transformedData);
+      } catch(error){
+        console.log(error);
+      }
       
     } catch (error) {
       console.error("Error fetching car data:", error);
       Alert.alert("Error", "Failed to fetch car data. Please try again.");
-      
-      // Fallback to mock data if API fails 3 items only
+
+      // Fallback mock data
       const fallbackData: CarItem[] = [
         {
           id: "1",
@@ -131,8 +144,7 @@ export default function Search() {
           year: 2022,
           price: 35000,
           mileage: 15000,
-          imageUrl: `https://via.placeholder.com/300x200/007AFF/white?text=${selectedMake}+${selectedModel}+1`,
-          description: "Low mileage, excellent condition"
+          description: "Low mileage, excellent condition",
         },
         {
           id: "2",
@@ -141,8 +153,7 @@ export default function Search() {
           year: 2021,
           price: 28000,
           mileage: 25000,
-          imageUrl: `https://via.placeholder.com/300x200/FF9500/white?text=${selectedMake}+${selectedModel}+2`,
-          description: "One owner, well maintained"
+          description: "One owner, well maintained",
         },
         {
           id: "3",
@@ -151,17 +162,16 @@ export default function Search() {
           year: 2023,
           price: 42000,
           mileage: 5000,
-          imageUrl: `https://via.placeholder.com/300x200/34C759/white?text=${selectedMake}+${selectedModel}+3`,
-          description: "Brand new condition, all features"
+          description: "Brand new condition, all features",
         }
       ];
-      
+
       setCarData(fallbackData);
     } finally {
       setLoadingCars(false);
     }
   }
-}
+};
 
   // Render item for FlatList
   const renderCarItem = ({ item }: { item: CarItem }) => (
@@ -219,7 +229,7 @@ export default function Search() {
       <View style={styles.searchButtonContainer}>
         <Button 
           title="Search"
-          onPress={captureMakeAndModel}
+          onPress={captureMakeAndModel} //refresh the vin array so that it does not keep any of the previous data from the last search. 
         />
       </View>
 
@@ -234,7 +244,7 @@ export default function Search() {
           ) : carData.length > 0 ? (
             <>
               <Text style={styles.resultsHeader}>
-                Found {carData.length} {selectedMake} {selectedModel} vehicles (max 10 results)
+                Found {carData.length} {selectedMake} {selectedModel} vehicles
               </Text>
               <FlatList
                 data={carData}
