@@ -3,6 +3,7 @@
 import { Text, View, Alert, Button, FlatList, ActivityIndicator, Image, StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { useState, useEffect } from "react";
+import { useCart } from "../contexts/cartContext";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 interface CarItem {
@@ -28,8 +29,9 @@ export default function Search() {
   const [carData, setCarData] = useState<CarItem[]>([]);
   const [loadingCars, setLoadingCars] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  //const [carImage, carImage] = useState(false);
   const [vins, setVins] = useState([]);
+
+  const { cartItems, addToCart } = useCart();
 
   const getMakesAndModels = async () => {
     try {
@@ -104,7 +106,7 @@ export default function Search() {
 
 
       const carListings = await response.json();
-      console.log("FULL API RESPONSE:", carListings);
+      // console.log("FULL API RESPONSE:", carListings);
       if (!Array.isArray(carListings.records)) {
         throw new Error("API response 'records' field is missing or not an array");
       }
@@ -124,7 +126,7 @@ export default function Search() {
 
       const vins = transformedData.map(car => car.vin);
       setVins(vins);
-      console.log("VINS: ", vins);
+      // console.log("VINS: ", vins);
 
       setCarData(transformedData);
       } catch(error){
@@ -186,6 +188,16 @@ export default function Search() {
         <Text style={styles.carPrice}>${item.price.toLocaleString()}</Text>
         <Text style={styles.carMileage}>{item.mileage.toLocaleString()} miles</Text>
         <Text style={styles.carDescription}>{item.description}</Text>
+      </View>
+
+      <View style={{width: "25%", marginLeft: "70%", marginBottom: 20}}>
+      <Button onPress={() => {
+            console.log("Need to add " + item.make + " " + item.model + " to cart"); // proves we are able to access make and model
+            // need to get addToCart function working now
+            addToCart(item); // attempting to add Car item into array shared in Context
+            Alert.alert(`${item.make} ${item.model} added to cart`);
+          }} 
+          title="Add to Cart"/> 
       </View>
     </View>
   );
