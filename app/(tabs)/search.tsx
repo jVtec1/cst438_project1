@@ -18,7 +18,6 @@ interface CarItem {
   description?: string;
 }
 
-
 export default function Search() {
   const [carMakes, setCarMakes] = useState([]);
   const [carModels, setCarModels] = useState([]);
@@ -31,7 +30,7 @@ export default function Search() {
   const [showResults, setShowResults] = useState(false);
   const [vins, setVins] = useState([]);
 
-  const { cartItems, addToCart } = useCart();
+  const { cartItems, addToCart, isInCart } = useCart();
 
   const getMakesAndModels = async () => {
     try {
@@ -85,16 +84,16 @@ export default function Search() {
   }
 
   const captureMakeAndModel = async () => {
-  if (selectedMake === null) {
-    Alert.alert("Please select a Make");
-  } else if (selectedModel === null) {
-    Alert.alert("Please select a Model"); 
-  } else {
-    Alert.alert("Searching for: " + selectedMake + " " + selectedModel);
-    setLoadingCars(true);
-    setShowResults(true);
+    if (selectedMake === null) {
+      Alert.alert("Please select a Make");
+    } else if (selectedModel === null) {
+      Alert.alert("Please select a Model"); 
+    } else {
+      Alert.alert("Searching for: " + selectedMake + " " + selectedModel);
+      setLoadingCars(true);
+      setShowResults(true);
     
-      try {
+    try {
       const response = await fetch(`https://www.auto.dev/api/listings?make=${selectedMake}&model=${selectedModel}&limit=10`, {
         method: "GET",
         headers: {
@@ -104,13 +103,14 @@ export default function Search() {
       });
 
 
-
       const carListings = await response.json();
-      // console.log("FULL API RESPONSE:", carListings);
+
       if (!Array.isArray(carListings.records)) {
         throw new Error("API response 'records' field is missing or not an array");
       }
+
       try{
+
         const transformedData: CarItem[] = carListings.records.map((car, index) => ({
         id: car.vin || index.toString(),
         vin: car.vin,
@@ -123,12 +123,8 @@ export default function Search() {
         description: `${car.trim || ""} - ${car.bodyStyle || ""}`,
       }));
 
-
-      const vins = transformedData.map(car => car.vin);
-      setVins(vins);
-      // console.log("VINS: ", vins);
-
       setCarData(transformedData);
+
       } catch(error){
         console.log(error);
       }
@@ -192,10 +188,13 @@ export default function Search() {
 
       <View style={{width: "25%", marginLeft: "70%", marginBottom: 20}}>
       <Button onPress={() => {
-            console.log("Need to add " + item.make + " " + item.model + " to cart"); // proves we are able to access make and model
-            // need to get addToCart function working now
-            addToCart(item); // attempting to add Car item into array shared in Context
-            Alert.alert(`${item.make} ${item.model} added to cart`);
+            addToCart(item); //  add Car item into array shared in Context
+            if (isInCart(item.id)) {
+              Alert.alert("Already in cart!");
+            } else {
+              Alert.alert(`${item.make} ${item.model} added to cart`);
+            }
+           
           }} 
           title="Add to Cart"/> 
       </View>
