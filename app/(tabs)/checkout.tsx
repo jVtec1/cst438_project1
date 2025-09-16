@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { Text, View, FlatList, Button, Alert } from "react-native"; 
+import { Text, View, FlatList, Button, Alert, Image, StyleSheet } from "react-native"; 
 import { useState } from "react";
 import { useCart } from  "../contexts/cartContext";
 
@@ -45,6 +45,11 @@ export default function Checkout() {
       elevation: 3,
       marginHorizontal: 20 
     }}>
+      <Image 
+        source={{ uri: item.imageUrl }} 
+        style={styles.carImage}
+        resizeMode="cover"
+      />
       <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
         {item.year} {item.make} {item.model}
       </Text>
@@ -95,3 +100,10 @@ export default function Checkout() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  carImage: {
+    width: '100%',
+    height: 200,
+  }
+})
