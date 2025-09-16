@@ -1,230 +1,200 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
   TextInput,
   Button,
-  Alert,
   KeyboardAvoidingView,
   Platform,
+  Alert,
   ActivityIndicator,
 } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 
-export default function DeleteAccountScreen() {
-    
-  const db = useSQLiteContext();
-  const router = useRouter();
-  const { userId: userIdParam } = useLocalSearchParams<{ userId?: string }>();
-
-  // If you store the logged-in user in context, you can pull it here instead:
-  // const { user } = useAuth();
-  // const userId = user?.id;
-
-  const userId = userIdParam ? Number(userIdParam) : undefined;
+export default function DeleteProfileScreen() {
+  const db = useSQLiteContext();   // SQLite DB
+  const router = useRouter(); 
 
   const [username, setUsername] = useState<string>("");
-  const [maskedEmail, setMaskedEmail] = useState<string>("");
+  const [currentPassword, setCurrentPassword] = useState<string>("");
   const [confirmText, setConfirmText] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
-  const [submitting, setSubmitting] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [usernameErr, setUsernameErr] = useState<string>("");
+  const [passwordErr, setPasswordErr] = useState<string>("");
+  const [confirmErr, setConfirmErr] = useState<string>("");
 
-  useEffect(() => {
-    let isMounted = true;
+  // Loading indicator flag
+  const [loading, setLoading] = useState(false);
 
-    const loadUser = async () => {
-      try {
-        if (!userId || Number.isNaN(userId)) {
-          setError("Missing user id.");
-          setLoading(false);
-          return;
-        }
+  /**
+   * validate()
+   * Runs basic checks before any DB queries:
+   *  - Username length must be ≥ 2
+   *  - Password length must be ≥ 3
+   *  - Confirm box must contain "DELETE"
+   */
+  const validate = () => {
+    let ok = true;
 
-        // Ensure foreign key enforcement for this connection
-        await db.execAsync("PRAGMA foreign_keys = ON;");
+    if (username.trim().length < 2) {
+      setUsernameErr("Username must be at least 2 characters.");
+      ok = false;
+    } else setUsernameErr("");
 
-        const row = await db.getFirstAsync<{
-          id: number;
-          username: string;
-          email: string;
-        }>("SELECT id, username, email FROM users WHERE id = ?;", [userId]);
-
-        if (!row) {
-          setError("User not found.");
-        } else {
-          setUsername(row.username);
-          setMaskedEmail(maskEmail(row.email));
-        }
-      } catch (e: any) {
-        setError(e?.message ?? "Failed to load user.");
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    loadUser();
-    return () => {
-      isMounted = false;
-    };
-  }, [db, userId]);
-
-  const maskEmail = (email: string) => {
-    // simple mask: j***@example.com
-    const [name, domain] = email.split("@");
-    if (!name || !domain) return email;
-    const visible = name.slice(0, 1);
-    return `${visible}${"*".repeat(Math.max(name.length - 1, 1))}@${domain}`;
-    // You can customize the masking strategy as you like
-  };
-
-  const verifyPassword = async (): Promise<boolean> => {
-    // compare plaintext; in real apps, store a salted hash instead
-    if (userId === undefined) return false;
-    const row = await db.getFirstAsync<{ password: string }>(
-      "SELECT password FROM users WHERE id = ?;",
-      [userId]
-    );
-    if (!row) return false;
-    return row.password === password;
-  };
-
-  const handleDelete = async () => {
-    setError("");
-
-    if (!userId || Number.isNaN(userId)) {
-      setError("Missing user id.");
-      return;
-    }
+    if (currentPassword.length < 3) {
+      setPasswordErr("Password must be at least 3 characters.");
+      ok = false;
+    } else setPasswordErr("");
 
     if (confirmText.trim().toUpperCase() !== "DELETE") {
-      setError('Please type "DELETE" in the box to confirm.');
-      return;
-    }
+      setConfirmErr('Type "DELETE" to confirm.');
+      ok = false;
+    } else setConfirmErr("");
 
-    if (password.length < 1) {
-      setError("Please enter your password to confirm.");
-      return;
-    }
+    return ok;
+  };
 
-    setSubmitting(true);
+  /**
+   * handleDeleteProfile()
+   * Orchestrates the deletion flow:
+   *  1. Validates inputs
+   *  2. Verifies the username/password combination exists
+   *  3. Deletes the user row inside a transaction
+   *  4. Shows an Alert, then navigates back to login
+   */
+  const handleDeleteProfile = async () => {
+    if (!validate()) return;  // stop early if validation fails
+
+    setLoading(true);
     try {
-      const ok = await verifyPassword();
-      if (!ok) {
-        setError("Incorrect password.");
-        setSubmitting(false);
+      // Enable FK cascades 
+      await db.execAsync("PRAGMA foreign_keys = ON;");
+
+      // confirm that username/password is valid
+      const user = await db.getFirstAsync<{ id: number; username: string }>(
+        `SELECT id, username FROM users WHERE username = ? AND password = ?;`,
+        [username.trim(), currentPassword]
+      );
+
+      if (!user) {
+        setPasswordErr("Username or password is incorrect.");
         return;
       }
 
-      // Do it with an explicit transaction
+      // delete this user inside a transaction
       await db.withTransactionAsync(async () => {
-        await db.execAsync("PRAGMA foreign_keys = ON;"); // re-assert inside tx
-        await db.runAsync("DELETE FROM users WHERE id = ?;", [userId]);
+        await db.execAsync("PRAGMA foreign_keys = ON;");
+        await db.runAsync(`DELETE FROM users WHERE id = ?;`, [user.id]);
       });
 
-      // (Optional) clear any in-memory auth/session here
-
-      Alert.alert(
-        "Account deleted",
-        "Your profile and related data have been removed.",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              router.replace("/"); // back to login
-            },
-          },
-        ]
-      );
-    } catch (e: any) {
-      setError(e?.message ?? "Failed to delete account.");
+      // success message then redirect
+      Alert.alert("Deleted", "Your account has been permanently removed.", [
+        { text: "OK", onPress: () => router.replace("/") },
+      ]);
+    } catch (e) {
+      console.error("Delete failed", e);
+      Alert.alert("Error", "Something went wrong. Please try again.");
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
   };
-
-  if (loading) {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator />
-        <Text style={{ marginTop: 8 }}>Loading account…</Text>
-      </View>
-    );
-  }
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.select({ ios: "padding", android: undefined })}
       style={{ flex: 1 }}
     >
-      <View style={{ flex: 1, padding: 20, gap: 16, justifyContent: "center" }}>
-        <Text style={{ fontSize: 24, fontWeight: "700" }}>Delete Account</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 14,
+          paddingHorizontal: 20,
+        }}
+      >
+        <Text style={{ fontSize: 24, fontWeight: "600" }}>Delete Profile</Text>
 
+        {/* Warning box */}
         <View
           style={{
+            width: "100%",
             borderWidth: 1,
-            borderRadius: 12,
-            padding: 14,
+            borderRadius: 10,
+            padding: 12,
             backgroundColor: "#fff5f5",
             borderColor: "#ffdddd",
           }}
         >
           <Text style={{ fontWeight: "600", marginBottom: 6 }}>Danger zone</Text>
-          <Text style={{ lineHeight: 20 }}>
-            This action is permanent and cannot be undone. Your account
-            <Text style={{ fontWeight: "700" }}> @{username}</Text> (
-            {maskedEmail}) and any associated data will be deleted.
+          <Text>
+            This action is permanent and cannot be undone. Deleting your profile
+            will remove your account and any related data.
           </Text>
         </View>
 
-        <View>
-          <Text style={{ fontWeight: "600" }}>Type DELETE to confirm</Text>
+        {/* Username input + error */}
+        <View style={{ width: "100%" }}>
+          <Text>Username</Text>
+          <TextInput
+            placeholder="Your username"
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+            style={{
+              borderWidth: 1, borderRadius: 10, padding: 10, marginTop: 5,
+            }}
+          />
+          {!!usernameErr && (
+            <Text style={{ color: "red", marginTop: 4 }}>{usernameErr}</Text>
+          )}
+        </View>
+
+        {/* Password input + error */}
+        <View style={{ width: "100%" }}>
+          <Text>Password</Text>
+          <TextInput
+            placeholder="Current password"
+            value={currentPassword}
+            onChangeText={setCurrentPassword}
+            secureTextEntry
+            textContentType="password"
+            autoCapitalize="none"
+            style={{
+              borderWidth: 1, borderRadius: 10, padding: 10, marginTop: 5,
+            }}
+          />
+          {!!passwordErr && (
+            <Text style={{ color: "red", marginTop: 4 }}>{passwordErr}</Text>
+          )}
+        </View>
+
+        {/* Confirm DELETE input + error */}
+        <View style={{ width: "100%" }}>
+          <Text>Type DELETE to confirm</Text>
           <TextInput
             placeholder='Type "DELETE"'
             value={confirmText}
             onChangeText={setConfirmText}
             autoCapitalize="characters"
             style={{
-              borderWidth: 1,
-              borderRadius: 10,
-              padding: 10,
-              marginTop: 6,
+              borderWidth: 1, borderRadius: 10, padding: 10, marginTop: 5,
             }}
           />
+          {!!confirmErr && (
+            <Text style={{ color: "red", marginTop: 4 }}>{confirmErr}</Text>
+          )}
         </View>
 
-        <View>
-          <Text style={{ fontWeight: "600" }}>Enter your password</Text>
-          <TextInput
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            textContentType="password"
-            autoCapitalize="none"
-            style={{
-              borderWidth: 1,
-              borderRadius: 10,
-              padding: 10,
-              marginTop: 6,
-            }}
-          />
-        </View>
+        {/* Action button or spinner */}
+        {loading ? (
+          <ActivityIndicator />
+        ) : (
+          <Button title="Delete my account" onPress={handleDeleteProfile} />
+        )}
 
-        {!!error && <Text style={{ color: "red" }}>{error}</Text>}
-
-        <Button
-          title={submitting ? "Deleting…" : "Delete my account"}
-          color={Platform.OS === "ios" ? undefined : "#b00020"}
-          onPress={handleDelete}
-          disabled={submitting}
-        />
+        <Button title="Back to Login" onPress={() => router.replace("/")} />
       </View>
     </KeyboardAvoidingView>
-
-    
   );
-
 }
