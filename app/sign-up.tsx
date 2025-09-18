@@ -196,6 +196,7 @@ export default function SignUpScreen() {
                         Already have an account? Click to to Login
                     </Text>
                 </Pressable>
+
             </View>
         </KeyboardAvoidingView>
     );

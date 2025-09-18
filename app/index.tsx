@@ -28,16 +28,26 @@ export default function Index() { // did not rename file to login-page because a
       setPassErrorMsg("");
     }
 
-    const loadUsers = async () => { // this checks if the login credentials (user) exists in the databse
-      try{   
-          const users = await db.getFirstAsync(`SELECT username, password 
-                                                FROM users 
-                                                WHERE username = ? AND password = ?`, usernameInput, passwordInput);
-          router.push("/(tabs)"); // if successful route to home page
-      }catch (error) {
-          console.error ("User not found", error);
-      }
-    };
+    const loadUsers = async () => {
+  try {
+    const user = await db.getFirstAsync(
+      `SELECT username, password FROM users WHERE username = ? AND password = ?`,
+      usernameInput.trim(),
+      passwordInput
+    );
+
+    if (user) {
+      router.push("/(tabs)");
+    } else {
+      console.warn("No matching user");
+      setPassErrorMsg("Invalid username or password.");
+    }
+  } catch (error) {
+    console.error("Login query failed", error);
+    setPassErrorMsg("Something went wrong. Try again.");
+  }
+};
+
 
     if(usernameInput.length >= 2 && passwordInput.length >= 3){ // valid username and password length
       loadUsers();
@@ -93,7 +103,12 @@ export default function Index() { // did not rename file to login-page because a
     {/* This "UserList" is here to see users and their credentials that are in the database, pops up on login screen, for testing purposes */}
     <UserList /> 
     {/* Also when this fills with users you have to scroll up and down it */}
-
     </View>
+
+
+
+
+      
+
   );
 }
