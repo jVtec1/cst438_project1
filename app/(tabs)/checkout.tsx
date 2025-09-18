@@ -58,6 +58,7 @@ export default function Checkout() {
       {/* end of Header */}
 
       <FlatList
+        accessibilityLabel="VehicleListInCart"
         data={cartItems}
         renderItem={renderCartItem}
         keyExtractor={(item) => item.id}
