@@ -29,12 +29,10 @@ const infoPage = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Personal Info</Text>
-            <Text style={{ marginTop: 10, marginBottom: 10 }}>Name: {name}</Text>
-            <Text style={{ marginTop: 10, marginBottom: 30 }}>Email: {email}</Text>
-            <View>
-                <Text style={styles.card}>Edit Profile</Text>
-            </View>
+            <Text style={{ ...styles.title, marginBottom: 50 }}>Personal Info</Text>
+            <Text style={{ marginTop: 10, marginBottom: 10 }}> <Text style={{ fontWeight: 'bold' }}>Name: </Text> {name}</Text>
+             <Text style={{ marginTop: 10, marginBottom: 10 }}> <Text style={{ fontWeight: 'bold' }}>Email: </Text> {name}</Text>
+
             <View style={{ marginTop: 20 }}>
                 <Button
                     title="Back to Main Screen"
@@ -42,12 +40,10 @@ const infoPage = () => {
                 />
             </View>
 
-            // delete profile button
             <View style={{ marginTop: 20 }}>
                 <Button title="Delete Profile" onPress={() => router.push("/deleteProfile")} />
             </View>
 
-            // change password button
             <View style={{ marginTop: 20 }}>
                 <Button title="Change Password" onPress={() => router.push("/changePassword")} />
             </View>
