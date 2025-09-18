@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { SQLiteDatabase, SQLiteProvider } from "expo-sqlite";
+import { CartProvider } from "../app/contexts/cartContext";
 
 export default function RootLayout() {
   //Since this is the root of the app, we make sure database is initialized here
@@ -24,7 +25,9 @@ async function initializeDatabase(db: SQLiteDatabase) {
 }
   return (
     <SQLiteProvider databaseName="app.db" onInit={initializeDatabase} options={{useNewConnection:false}}>
+      <CartProvider>
       <Stack />
+      </CartProvider>
     </SQLiteProvider>
     
   );
