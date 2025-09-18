@@ -30,6 +30,7 @@ const UserList = () => {
 
     return(
         <FlatList
+            accessibilityLabel="UserList"
             data= {Users} 
             refreshControl={
                 <RefreshControl refreshing={isLoading} onRefresh={loadUsers} tintColor={"#007AFF"}/>

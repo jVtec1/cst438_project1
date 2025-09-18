@@ -258,6 +258,7 @@ export default function Search() {
                 Found {carData.length} {selectedMake} {selectedModel} vehicles
               </Text>
               <FlatList
+                accessibilityLabel="VehicleList"
                 data={carData}
                 renderItem={renderCarItem}
                 keyExtractor={(item) => item.id}
