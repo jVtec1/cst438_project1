@@ -85,10 +85,10 @@ export default function Index() { // did not rename file to login-page because a
 
     <Text style={{color: "red"}}> {passwordErrorMsg} </Text>
 
-    <Button title="Sign in" onPress={verifyLogin}/>
+    <Button accessibilityLabel="Sign in" title="Sign in" onPress={verifyLogin}/>
 
     <Text style={{marginTop: 20}}> Don&apos;t have an account? Click here: </Text>
-    <Button title="Sign up" onPress={directToSignUp}/>
+    <Button accessibilityLabel="Sign up" title="Sign up" onPress={directToSignUp}/>
 
     {/* This "UserList" is here to see users and their credentials that are in the database, pops up on login screen, for testing purposes */}
     <UserList /> 

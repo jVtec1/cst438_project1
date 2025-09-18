@@ -43,3 +43,6 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+#Local test coverage
+coverage
