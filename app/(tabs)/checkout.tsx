@@ -37,6 +37,7 @@ export default function Checkout() {
             removeFromCart(item.id);
             Alert.alert(`${item.make} ${item.model} removed from cart`);
           }} 
+          color="red"
           title=" Remove from Cart"/> 
       </View>
 
@@ -44,7 +45,7 @@ export default function Checkout() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+    <View style={{ flex: 1, backgroundColor: '#005EB8' }}>
 
       {/* Header */}
       <View style={{
@@ -53,7 +54,7 @@ export default function Checkout() {
         marginTop: 40,
         marginBottom: 20
       }}>
-        <Text style={{ fontSize: 40, fontWeight: 'bold' }}>My Cart</Text>
+        <Text style={{ fontSize: 40, fontWeight: 'bold', color: '#B59410' }}>My Cart</Text>
       </View>
       {/* end of Header */}
 
@@ -64,7 +65,7 @@ export default function Checkout() {
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={true}
         ListEmptyComponent={
-          <Text style={{ textAlign: 'center', fontSize: 16, color: '#666', marginTop: 50 }}>
+          <Text style={{ textAlign: 'center', fontSize: 20, color: 'black', marginTop: 50 }}>
             Your cart is empty
           </Text>
         }

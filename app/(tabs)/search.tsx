@@ -4,7 +4,6 @@ import { Text, View, Alert, Button, FlatList, ActivityIndicator, Image, StyleShe
 import { Dropdown } from "react-native-element-dropdown";
 import { useState, useEffect } from "react";
 import { useCart } from "../contexts/cartContext";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 interface CarItem {
   id: string;
@@ -196,7 +195,9 @@ export default function Search() {
             }
            
           }} 
-          title="Add to Cart"/> 
+          title="Add to Cart"
+          color="#B59410"/> 
+      
       </View>
     </View>
   );
@@ -240,6 +241,7 @@ export default function Search() {
       <View style={styles.searchButtonContainer}>
         <Button 
           title="Search"
+          color= "#B59410"
           onPress={captureMakeAndModel} //refresh the vin array so that it does not keep any of the previous data from the last search. 
         />
       </View>
@@ -280,8 +282,8 @@ export default function Search() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
-    backgroundColor: '#f5f5f5',
+    // marginTop: 20,
+    backgroundColor:"#005EB8",
   },
   header: {
     justifyContent: "center",
@@ -289,8 +291,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerText: {
-    fontSize: 20,
+    marginTop: 20,
+    fontSize: 30,
     fontWeight: 'bold',
+    color: "#B59410"
   },
   dropdownContainer: {
     justifyContent: "center",
@@ -314,7 +318,7 @@ const styles = StyleSheet.create({
   dropdownLabel: {
     padding: 10,
     fontWeight: 'bold',
-    width: 60,
+    width: 70
   },
   dropdown: {
     height: 50,
@@ -330,6 +334,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
     marginBottom: 20,
+    color: "white"
   },
   resultsContainer: {
     flex: 1,
@@ -345,6 +350,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
+    color: '#B59410'
   },
   noResultsText: {
     textAlign: 'center',

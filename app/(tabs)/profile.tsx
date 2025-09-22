@@ -42,12 +42,12 @@ const infoPage = () => {
                 />
             </View>
 
-            // delete profile button
+           {/* delete profile button */}
             <View style={{ marginTop: 20 }}>
                 <Button title="Delete Profile" onPress={() => router.push("/deleteProfile")} />
             </View>
 
-            // change password button
+            {/*change password button */}
             <View style={{ marginTop: 20 }}>
                 <Button title="Change Password" onPress={() => router.push("/changePassword")} />
             </View>
