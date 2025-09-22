@@ -37,7 +37,7 @@ export default function Index() { // did not rename file to login-page because a
     );
 
     if (user) {
-      router.push("/(tabs)");
+      router.push("/(tabs)/home");
     } else {
       console.warn("No matching user");
       setPassErrorMsg("Invalid username or password.");
