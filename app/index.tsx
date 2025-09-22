@@ -1,4 +1,4 @@
-import { Text, TextInput, View, Button, FlatList, ActivityIndicator } from "react-native";
+import { Text, TextInput, View, Button, FlatList, ActivityIndicator, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite"; // to access the database
@@ -66,12 +66,12 @@ export default function Index() { // did not rename file to login-page because a
     // <Stack.Screen options={{title:"Login"}}/> {/* had to access Stack to change title of page from index to Login */}
     <View // without other View (parent), code gets error
     style={{
-      justifyContent: "center",
+      // justifyContent: "center",
       alignItems: "center",
       gap: 20,
       flex: 0.7
     }}>
-      <Text> Login </Text>
+      <Text style={styles.loginTitle}> Login </Text>
       <View
         style={{
           flexDirection: "row",
@@ -101,14 +101,15 @@ export default function Index() { // did not rename file to login-page because a
     <Button accessibilityLabel="Sign up" title="Sign up" onPress={directToSignUp}/>
 
     {/* This "UserList" is here to see users and their credentials that are in the database, pops up on login screen, for testing purposes */}
-    <UserList /> 
+    {/* <UserList />  */}
     {/* Also when this fills with users you have to scroll up and down it */}
     </View>
 
-
-
-
-      
-
   );
 }
+
+const styles = StyleSheet.create({
+  loginTitle: {
+    marginTop: 20
+  }
+})
