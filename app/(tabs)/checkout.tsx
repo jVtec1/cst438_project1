@@ -5,7 +5,7 @@ import { useCart } from  "../contexts/cartContext";
 
 export default function Checkout() {
 
-  const { cartItems, removeFromCart } = useCart();
+  const { cartItems, removeFromCart, clearCart } = useCart();
 
   // UI for each car item 
   const renderCartItem = ({ item }) => (
@@ -44,6 +44,16 @@ export default function Checkout() {
     </View>
   );
 
+  const confirmPurchase = () => {
+    if (cartItems.length === 0) {
+      Alert.alert("Cart empty!")
+    } else {
+      clearCart();
+      Alert.alert("Purchase confirmed!");
+    }
+    
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: '#005EB8' }}>
 
@@ -73,6 +83,15 @@ export default function Checkout() {
           paddingBottom: 20 
         }}
       />
+
+      <View style={{
+        marginTop: "10"
+      }}>
+        <Button
+        title="Confirm Purchase"
+        color="#378F5B"
+        onPress={confirmPurchase}/>
+      </View>
 
     </View>
   );

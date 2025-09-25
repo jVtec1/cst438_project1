@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
   noResultsText: {
     textAlign: 'center',
     fontSize: 16,
-    color: '#666',
+    color: '#B59410',
     marginTop: 20,
   },
   carList: {
