@@ -54,6 +54,11 @@ export const CartProvider = ({ children }) => {
         return cartItems.some(item => item.id === itemId);
     };
 
+    //clear cart (used for after user purchases vehicle(s))
+    const clearCart = () => {
+        setCartItems([]);
+    }
+
     // The value object contains everything other components can use
     const value = {
         // State
@@ -63,6 +68,7 @@ export const CartProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         isInCart,
+        clearCart
         
     };
 
