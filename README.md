@@ -53,30 +53,74 @@ I worked on both frontend and backend. I set up the basic layout of [Login page]
 
 Time management and also make good comments, so my teammates understand what is happening in the file.
 
-### Teammate
+### Andy Espinoza 
 1. Teammate's pull requests are [here](https://github.com/Jonathan-Welham/Bits-Bots/pulls/@CarolDanvers)
 1. Teammate's Github issues are [here](https://github.com/FedericoRubino/cst438_project2/issues/created_by/@FedericoRubino)
 
 #### What was your role / which stories did you work on
-Carol mostly worked on getting the app to run faster, better, and higher.  She did the best work possible but her contributions were overpowered and not well received by the fans.
+
 
 + What was the biggest challenge? 
-  + Managing pull requests and merges
+  
 + Why was it a challenge?
-  + We were all new to git/github and not everyone followed convention
+
   + How was the challenge addressed?
-  + I went to the TA for help and used ChatGPT and web resources to get more comfortable with git.
 + Favorite / most interesting part of this project
-  + Finally getting the IDs from the API calls to store in the ROOM database
+  
 + If you could do it over, what would you change?
-  + I would get the ROOM database setup FIRST
+ 
 + What is the most valuable thing you learned?
-  + Do the work early and document EVERYTHING
+
+
+### Sergio Gonzalez 
+1. Teammate's pull requests are [here](https://github.com/Jonathan-Welham/Bits-Bots/pulls/@CarolDanvers)
+1. Teammate's Github issues are [here](https://github.com/FedericoRubino/cst438_project2/issues/created_by/@FedericoRubino)
+
+#### What was your role / which stories did you work on
+
+
++ What was the biggest challenge? 
+  
++ Why was it a challenge?
+
+  + How was the challenge addressed?
++ Favorite / most interesting part of this project
+  
++ If you could do it over, what would you change?
+ 
++ What is the most valuable thing you learned?
+
+
+
+### Alberto Rodriguez 
+1. Teammate's pull requests are [here](https://github.com/Jonathan-Welham/Bits-Bots/pulls/@CarolDanvers)
+1. Teammate's Github issues are [here](https://github.com/FedericoRubino/cst438_project2/issues/created_by/@FedericoRubino)
+
+#### What was your role / which stories did you work on
+
+
++ What was the biggest challenge? 
+  
++ Why was it a challenge?
+
+  + How was the challenge addressed?
++ Favorite / most interesting part of this project
+  
++ If you could do it over, what would you change?
+ 
++ What is the most valuable thing you learned?
 
 
 ## Conclusion
 
 - How successful was the project?
   - Think in terms of what did you set out to do and what actually got done?
+    
+    Our project was successful in the fact that we got the minimum requirements for it, including: displaying information from an API and having a logged-in user's information display.
+    We wanted to do a lot more with our project, but we got the basic functionality of allowing a user to create an account and sign in, search for vehicles, and add and remove vehicles in cart. We also styled our app. 
 - What was the largest victory?
+
+    Getting difficult things to work, such as getting the database up and running, and figuring out how to get our API to work in the app in addition to connecting two code files that made those API calls. Completing the search page felt very good because it felt like our app was really coming together. 
 - Final assessment of the project
+
+  This was a good first project to learn React Native and Expo, and to practice putting together a frontend and backend of an application from scratch. 
