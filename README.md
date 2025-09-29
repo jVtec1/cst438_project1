@@ -102,22 +102,31 @@ My role dealt with working both on the FrontEnd and the BackEnd. I set up a [Fla
 
 
 ### Alberto Rodriguez 
-1. Teammate's pull requests are [here](https://github.com/Jonathan-Welham/Bits-Bots/pulls/@CarolDanvers)
-1. Teammate's Github issues are [here](https://github.com/FedericoRubino/cst438_project2/issues/created_by/@FedericoRubino)
+1. Teammate's pull requests are [here](https://github.com/jVtec1/cst438_project1/pulls?q=is%3Apr+is%3Aclosed+author%3AAlbertoCsumb)
+1. Teammate's Github issues are [here](https://github.com/jVtec1/cst438_project1/issues?q=is%3Aissue%20state%3Aclosed%20assignee%3AAlbertoCsumb)
 
 #### What was your role / which stories did you work on
 
+I worked on user tools and settings. Allowing the user to sign in using the sign in page  [Sign In page](https://github.com/jVtec1/cst438_project1/issues/3). allowing the user to enter the site after signing up. Later on allowing them to change their password within the site in the profile page [Edit Profile](https://github.com/jVtec1/cst438_project1/issues/6). Within the same sense i set up the delete account code, making sure the interaction with the database caused thie info to be deleted. [Delete Account](https://github.com/jVtec1/cst438_project1/issues/13). After the work had been done in the backend it allowed to work on my pages backend connected my sign in page with the database [SignUp Page backend](https://github.com/jVtec1/cst438_project1/issues/22).
+
 
 + What was the biggest challenge? 
+One of the biggest challanged was time managenment and not remembering to allow comments for myself when comming back to the code at a differnt time. time managemnet was also a large issue for me.
+  
   
 + Why was it a challenge?
+  I didnt take the time to organize and set up comments that will help me understand how far i got and the next steps i need to make. also not having a great schedule when it comes to free time off of work.
 
   + How was the challenge addressed?
+  I managed to find a good time thoughout the week to work on the project and complete my portions of the work.
 + Favorite / most interesting part of this project
+  seeing how my portion connected to others, such as the sign up page working well with the database allowing the user in.
   
 + If you could do it over, what would you change?
+ I would orgainze my work more effectly. allowing myself more time and a clearer idea of how i want my work to look. Manage my time well and cooridate with teammates about quetions on new ideas
  
 + What is the most valuable thing you learned?
+  The ability to look for help in mutliple sources such as past projects or viedos posted of others working in similar projects
 
 
 ## Conclusion
