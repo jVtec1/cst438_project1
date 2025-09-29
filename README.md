@@ -54,8 +54,9 @@ I worked on both frontend and backend. I set up the basic layout of [Login page]
 Time management and also make good comments, so my teammates understand what is happening in the file.
 
 ### Andy Espinoza 
-1. Teammate's pull requests are [here](https://github.com/jVtec1/cst438_project1/pulls?q=is%3Apr+author%3AjVtec1+is%3Aclosed)
-1. Teammate's Github issues are [here](https://github.com/jVtec1/cst438_project1/issues?q=is%3Aissue%20state%3Aopen%20assignee%3AjVtec1)
+
+- [My pull requests](https://github.com/jVtec1/cst438_project1/pulls?q=is%3Apr+author%3AjVtec1+is%3Aclosed)
+- [Issues](https://github.com/jVtec1/cst438_project1/issues?q=is%3Aissue%20state%3Aopen%20assignee%3AjVtec1)
 
 #### What was your role / which stories did you work on
 I worked both on the frontent and backend, but mostly the backend. I setup the basic [navigation](https://github.com/jVtec1/cst438_project1/issues/7) between the app pages (once logged in) and provided the tab bar UI for users to switch between pages, which also included some visuals and icons for the tabs. I added and created the [database](https://github.com/jVtec1/cst438_project1/issues/11) for our app, allowing users to create accounts that we could store and retrieve, used to login. I also added [JUnit test functionality](https://github.com/jVtec1/cst438_project1/issues/26) to our app and created tests for most of our [pages](https://github.com/jVtec1/cst438_project1/issues/28) to ensure they properly rendered/worked. 
