@@ -84,19 +84,20 @@ I worked both on the frontent and backend, but mostly the backend. I setup the b
 1. Teammate's Github issues are [here](https://github.com/FedericoRubino/cst438_project2/issues/created_by/@FedericoRubino)
 
 #### What was your role / which stories did you work on
-
+My role dealt with working both on the FrontEnd and the BackEnd. I set up a [FlatList](https://github.com/jVtec1/cst438_project1/issues/10) In order to display the vehicles currently in the apps selection along with the information required so our users can make their decision on the best car. I created the barebones [Information Page](https://github.com/jVtec1/cst438_project1/issues/5) when we were first starting out in order to display a user's info. After setting up the flatlist I was tasked with connecting the [Search Page & Recycler View](https://github.com/jVtec1/cst438_project1/issues/24) in order to ensure that the results on the list matched the search on both model and make of vehicle.
 
 + What was the biggest challenge? 
-  
+  To me the biggest challenge was getting familiar coding style of react-native. There was so much that I had too look into that a lot of the times I was just trying to learn and adapt as I completed my stories. Related to the stories, creating a flatlist was the biggest challenge. Setting it up and then having to merge it with the search options. 
 + Why was it a challenge?
-
+  I think this goes back to the part of having to learn everything as I went. There was a steep learning curve for me snd especially when dealing with API retrieval and then adding the data into the flatlist, it became complicated to me. 
   + How was the challenge addressed?
+    I Found the documentation and videos to aide me in the process of setting up the code so that it would run well together. I do owe some praise to chatgpt as well for helping me with some instances of when my code would just not work. 
 + Favorite / most interesting part of this project
-  
+  Favorite part of the project was learning how to retreive information from the API. I think it was nice seeing all the info translate in realtime onto our app. 
 + If you could do it over, what would you change?
- 
+  I wouldn't change much of the code but I would incorporate more into the project and add more functions that would maximize the API data that we used. I would also take the chance to communicate better with my teammates and bring up any issues or concerns that I have beforehand than waiting on the day its due.
 + What is the most valuable thing you learned?
-
+  The most valuable thing I learned was that I shouldn't be afraid to ask for help especially from my teammates. It hinders my progress and without the help I dont get anything done. 
 
 
 ### Alberto Rodriguez 
