@@ -54,22 +54,29 @@ I worked on both frontend and backend. I set up the basic layout of [Login page]
 Time management and also make good comments, so my teammates understand what is happening in the file.
 
 ### Andy Espinoza 
-1. Teammate's pull requests are [here](https://github.com/Jonathan-Welham/Bits-Bots/pulls/@CarolDanvers)
-1. Teammate's Github issues are [here](https://github.com/FedericoRubino/cst438_project2/issues/created_by/@FedericoRubino)
+1. Teammate's pull requests are [here](https://github.com/jVtec1/cst438_project1/pulls?q=is%3Apr+author%3AjVtec1+is%3Aclosed)
+1. Teammate's Github issues are [here](https://github.com/jVtec1/cst438_project1/issues?q=is%3Aissue%20state%3Aopen%20assignee%3AjVtec1)
 
 #### What was your role / which stories did you work on
+I worked both on the frontent and backend, but mostly the backend. I setup the basic [navigation](https://github.com/jVtec1/cst438_project1/issues/7) between the app pages (once logged in) and provided the tab bar UI for users to switch between pages, which also included some visuals and icons for the tabs. I added and created the [database](https://github.com/jVtec1/cst438_project1/issues/11) for our app, allowing users to create accounts that we could store and retrieve, used to login. I also added [JUnit test functionality](https://github.com/jVtec1/cst438_project1/issues/26) to our app and created tests for most of our [pages](https://github.com/jVtec1/cst438_project1/issues/28) to ensure they properly rendered/worked. 
 
-
-+ What was the biggest challenge? 
++ What was the biggest challenge?
+    - The biggest challenge for me was getting the JUnit tests functionality added to the project and actually creating the Unit Tests.
   
 + Why was it a challenge?
+    - There was barely any documentation I could find online for our specific project (Expo-go + React Native + Typescript + SQLiteDatabase) and I needed to use a specific npm library and React Native library.
 
-  + How was the challenge addressed?
++ How was the challenge addressed?
+    - Was able to find just enough documention and videos online, along with a little copy and pasting error messages into google and chat gpt, to piece together how to properly implement and create tests for our app.
+  
 + Favorite / most interesting part of this project
+    - The most interesting part of this project for me was learning and using a new language in React.
   
 + If you could do it over, what would you change?
+    - Maybe I could try taking more frontend work, as I mostly did backend work that the user doesn't see.
  
 + What is the most valuable thing you learned?
+    - The most valuable thing I learned was communicating thoroughly and clearly with teammates so everyone knows whos working on what and when.
 
 
 ### Sergio Gonzalez 
